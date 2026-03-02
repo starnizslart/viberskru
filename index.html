@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FloodCare+ | ระบบรับแจ้งเหตุและช่วยเหลือผู้ประสบภัย</title>
+    <!-- เพิ่ม Tailwind Config เพื่อเปิดใช้งาน Dark Mode แบบ Class -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -36,25 +37,33 @@
             }
         }
         
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { @apply bg-transparent; }
         ::-webkit-scrollbar-thumb { @apply bg-slate-300 dark:bg-slate-600 rounded-full; }
         ::-webkit-scrollbar-thumb:hover { @apply bg-slate-400 dark:bg-slate-500; }
 
+        /* Loader Animation */
         .spinner { border: 3px solid rgba(0, 0, 0, 0.1); border-left-color: #2563eb; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
         .dark .spinner { border-left-color: #60a5fa; border: 3px solid rgba(255,255,255,0.1); }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        /* Custom Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         .animate-fade-in-up { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
         .delay-100 { animation-delay: 100ms; }
         .delay-200 { animation-delay: 200ms; }
         .delay-300 { animation-delay: 300ms; }
         .delay-400 { animation-delay: 400ms; }
         
+        /* Stat Icon Wrapper */
         .stat-icon { transition: transform 0.3s ease; }
         .glass-card:hover .stat-icon { transform: scale(1.15) rotate(5deg); }
 
+        /* Localized Rain Effect */
         .rain-cloud-container { position: relative; overflow: hidden; border-radius: 12px; }
         .raindrop {
             position: absolute;
@@ -74,6 +83,7 @@
     <!-- Background Pattern -->
     <div class="absolute inset-0 z-[-1] pointer-events-none opacity-30 dark:opacity-5 mix-blend-multiply" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'#94a3b8\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
 
+    <!-- Theme Overlay Effect (Sun/Moon icon pops up on theme toggle) -->
     <div id="theme-icon-overlay" class="fixed inset-0 z-[9999] pointer-events-none flex items-center justify-center transition-all duration-[600ms] opacity-0 scale-50"></div>
 
     <!-- Global Loader -->
@@ -87,9 +97,8 @@
 
     <!-- ================= LOGIN / REGISTER VIEW ================= -->
     <div id="auth-view" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-950 overflow-hidden transition-colors duration-500">
+        <!-- Interactive Particle Canvas -->
         <canvas id="authCanvas" class="absolute inset-0 w-full h-full z-0 pointer-events-none"></canvas>
-        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/30 dark:bg-indigo-600/20 rounded-full blur-[100px] z-0 pointer-events-none"></div>
-        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-400/20 dark:bg-blue-600/20 rounded-full blur-[100px] z-0 pointer-events-none"></div>
 
         <div class="glass-card w-full max-w-md rounded-3xl overflow-hidden animate-fade-in-up border border-slate-200/80 dark:border-slate-700/80 z-10 relative shadow-2xl">
             <div class="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-800 p-8 text-center text-white relative overflow-hidden">
@@ -104,6 +113,7 @@
                     <button onclick="toggleAuth('register')" id="tab-register" class="flex-1 py-3 text-center font-medium text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors border-b-2 border-transparent">ลงทะเบียน</button>
                 </div>
 
+                <!-- Login Form -->
                 <form id="form-login" onsubmit="handleLogin(event)" class="space-y-5 relative">
                     <div>
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">ชื่อผู้ใช้งาน (Username)</label>
@@ -121,6 +131,7 @@
                     <button type="submit" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">เข้าสู่ระบบ</button>
                 </form>
 
+                <!-- Register Form -->
                 <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden max-h-[55vh] overflow-y-auto pr-2 custom-scrollbar relative">
                     <div>
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">ชื่อ-นามสกุล (Name)</label>
@@ -430,7 +441,6 @@
                         <p class="text-slate-500 dark:text-slate-400 mt-1">สรุปเคสที่ได้รับมอบหมายแยกตามระดับความรุนแรง</p>
                     </div>
 
-                    <!-- เปลี่ยน Grid ให้รองรับ 4 กล่อง (รวม 1, แดง 1, เหลือง 1, เขียว 1) -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                         <div class="glass-card rounded-2xl p-6 relative overflow-hidden animate-fade-in-up delay-100 group border-l-4 border-l-blue-500">
                             <div class="absolute top-0 right-0 w-32 h-32 bg-blue-100 dark:bg-blue-900/40 rounded-bl-full -z-10 opacity-50 transition-transform group-hover:scale-110"></div>
@@ -533,7 +543,6 @@
                                         <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">รายละเอียดสถานการณ์เบื้องต้น <span class="text-rose-500">*</span></label>
                                         <textarea id="problem_desc" rows="4" required maxlength="2000" class="input-style resize-none" placeholder="เช่น ระดับน้ำสูงเท่าไหร่, ต้องการอะไรด่วนที่สุด..."></textarea>
                                     </div>
-                                    <!-- ส่วนเพิ่ม: แนบรูปภาพ -->
                                     <div class="col-span-2">
                                         <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">แนบรูปภาพสถานที่เกิดเหตุ (ถ้ามี)</label>
                                         <input type="file" id="case_image" accept="image/*" class="input-style !py-2 cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-slate-700 dark:file:text-slate-200">
@@ -589,11 +598,9 @@
                 <div id="view-news" class="view-section hidden max-w-7xl mx-auto animate-fade-in-up">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         
-                        <!-- Weather Alert Widget -->
                         <div class="glass-card rounded-3xl p-6 lg:col-span-1 bg-gradient-to-b from-slate-700 to-slate-900 border-none shadow-xl text-white relative overflow-hidden flex flex-col justify-center items-center h-64">
                             <h3 class="text-lg font-bold mb-4 z-10 opacity-90 tracking-wide">แจ้งเตือนสภาพอากาศ</h3>
                             
-                            <!-- Cloud & Rain Emoji Animation -->
                             <div class="rain-cloud-container w-32 h-32 flex flex-col items-center justify-start z-10 relative">
                                 <div class="text-6xl absolute top-0 z-20 drop-shadow-lg">☁️</div>
                                 <div id="mini-rain" class="absolute top-10 left-0 w-full h-full"></div>
@@ -605,7 +612,6 @@
                             </div>
                         </div>
 
-                        <!-- Map Widget -->
                         <div class="glass-card rounded-3xl p-6 lg:col-span-2 flex flex-col h-[500px] lg:h-auto">
                             <div class="flex items-center gap-3 mb-4">
                                 <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center">
@@ -617,10 +623,8 @@
                                 </div>
                             </div>
                             <div class="flex-1 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 relative bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                                <!-- จำลอง Map iframe พื้นที่ภาคใต้/สงขลา -->
                                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126661.34185202685!2d100.43575975!3d7.1687588!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x304d32cf78888065%3A0x10223bc2c3641b0!2sSongkhla%2C%20Mueang%20Songkhla%20District%2C%20Songkhla!5e0!3m2!1sen!2sth!4v1700000000000!5m2!1sen!2sth" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                                 
-                                <!-- Mock Map Overlay Overlay (สำหรับจำลองจุดรับของ) -->
                                 <div class="absolute top-4 right-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 text-xs w-48">
                                     <p class="font-bold text-slate-800 dark:text-white mb-2 pb-1 border-b border-slate-200 dark:border-slate-700">จุดรับของวันนี้</p>
                                     <ul class="space-y-2">
@@ -782,13 +786,13 @@
                     </div>
                 </div>
 
-                <!-- VIEW: HISTORY (User Only) -->
+                <!-- VIEW: HISTORY (Shared) -->
                 <div id="view-history" class="view-section hidden h-full flex flex-col max-w-7xl mx-auto animate-fade-in-up">
                     <div class="glass-card rounded-2xl shadow-sm flex-1 flex flex-col overflow-hidden border border-slate-200/60 dark:border-slate-700">
                         <div class="p-6 border-b border-slate-200/60 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                             <div>
-                                <h2 class="text-xl font-bold text-slate-800 dark:text-white">ประวัติการแจ้งเหตุ</h2>
-                                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">ประวัติเคสทั้งหมดของคุณ รวมถึงเคสที่อยู่ระหว่างช่วยเหลือ และยุติเรื่องแล้ว</p>
+                                <h2 class="text-xl font-bold text-slate-800 dark:text-white">ประวัติการแจ้งเหตุ / ช่วยเหลือ</h2>
+                                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">ประวัติเคสทั้งหมดที่อยู่ระหว่างช่วยเหลือ หรือยุติเรื่องแล้ว</p>
                             </div>
                             <div class="relative w-full sm:w-64">
                                 <svg class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -808,7 +812,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="history-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/50 bg-white/80 dark:bg-slate-800/50">
-                                    <!-- Rendered via JS -->
+                                    <tr><td colspan="6" class="text-center py-12 text-slate-400 font-medium">กำลังโหลดข้อมูล...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -881,7 +885,7 @@
                         </label>
                     </div>
 
-                    <!-- ส่วนประเมินความรุนแรงของแอดมิน (เอาช่องส่งต่อหน่วยงานออกไปให้หน่วยงานกรอกเอง) -->
+                    <!-- ส่วนประเมินความรุนแรงของแอดมิน -->
                     <div id="admin-forward-sec" class="hidden mb-4 p-5 bg-indigo-50/50 dark:bg-indigo-900/10 border border-indigo-200 dark:border-indigo-800/50 rounded-xl animate-fade-in-up">
                         <div>
                             <label class="block text-sm font-semibold text-indigo-900 dark:text-indigo-300 mb-2">ประเมินระดับความรุนแรง (Severity) <span class="text-rose-500">*</span></label>
@@ -1072,12 +1076,62 @@
         </div>
     </div>
 
+    <!-- Modal Admin Add User -->
+    <div id="add-user-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[75] flex items-center justify-center p-4 hidden transition-opacity">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col transform transition-transform scale-95 border border-slate-200 dark:border-slate-700" id="add-user-modal-content">
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/80">
+                <h3 class="font-bold text-lg text-slate-800 dark:text-white flex items-center gap-2">
+                    <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                    เพิ่มผู้ใช้งานใหม่
+                </h3>
+                <button onclick="closeAddUserModal()" class="text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 p-1.5 rounded-lg transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div class="p-6 overflow-y-auto custom-scrollbar bg-white dark:bg-slate-900 max-h-[70vh]">
+                <form id="adminAddUserForm" onsubmit="submitAddUser(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">ชื่อ-นามสกุล</label>
+                        <input type="text" id="add_name" required pattern="[a-zA-Zก-ฮะ-์\s]+" minlength="2" title="กรุณากรอกเฉพาะตัวอักษรภาษาไทยหรือภาษาอังกฤษเท่านั้น" oninput="this.value = this.value.replace(/[^a-zA-Zก-ฮะ-์\s]/g, '')" class="input-style">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">ชื่อผู้ใช้งาน (Username)</label>
+                        <input type="text" id="add_username" required pattern="[a-zA-Z0-9]+" minlength="4" maxlength="20" class="input-style">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">รหัสผ่าน</label>
+                        <div class="relative">
+                            <input type="password" id="add_password" required minlength="6" class="input-style pr-12">
+                            <button type="button" onclick="togglePassword('add_password', this)" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">เบอร์ติดต่อ</label>
+                        <input type="tel" id="add_phone" required pattern="[0-9]{9,10}" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="input-style">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">ประเภทบัญชี (Role)</label>
+                        <select id="add_role" class="input-style cursor-pointer appearance-none">
+                            <option value="user">ผู้แจ้งเหตุ (User)</option>
+                            <option value="agency">ศูนย์ปฏิบัติการ / หน่วยงาน (Agency)</option>
+                            <option value="admin">เจ้าหน้าที่ศูนย์กลาง (Admin)</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-end gap-3 pt-5 border-t border-slate-100 dark:border-slate-800 mt-2">
+                        <button type="button" onclick="closeAddUserModal()" class="px-5 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-semibold transition-colors">ยกเลิก</button>
+                        <button type="submit" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-md shadow-indigo-500/30 transition-all transform hover:-translate-y-0.5">เพิ่มผู้ใช้งาน</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script>
         // ==========================================
         // ตั้งค่า Google Apps Script Web App URL ที่นี่
         // ==========================================
-        const GAS_WEBAPP_URL = ""; 
+        const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxPYKj7_nUAXc8w4jRKX85R41RJAw8BPRgfttFe1tYzPtOk0oavdPlnz7AWedg9Kdpoww/exec"; 
         
         let currentUser = null; 
         let globalData = [];
@@ -1319,7 +1373,10 @@
             const obj = document.getElementById(id);
             if (!obj) return;
             const start = parseInt(obj.textContent) || 0;
-            if (start === end) return;
+            if (start === end) {
+                obj.textContent = end;
+                return;
+            }
             
             let startTimestamp = null;
             const step = (timestamp) => {
@@ -1556,7 +1613,7 @@
                 'dashboard': 'สรุปสถานการณ์เหตุฉุกเฉินทั้งหมดจากทุกพื้นที่', 
                 'agency-dashboard': 'สรุปเคสที่ได้รับมอบหมายและต้องเข้าดำเนินการเร่งด่วน',
                 'form': 'บันทึกข้อมูลและรายละเอียดที่ต้องการความช่วยเหลือ', 
-                'list': currentUser.role === 'admin' ? 'ตรวจสอบและคัดกรองส่งต่อให้หน่วยงานที่เกี่ยวข้อง' : 'ตรวจสอบสถานะและอัปเดตการเข้าช่วยเหลือผู้ประสบภัย',
+                'list': currentUser.role === 'admin' ? 'ตรวจสอบและคัดกรองส่งต่อให้หน่วยงานที่เกี่ยวข้อง' : (currentUser.role === 'agency' ? 'ตรวจสอบสถานะและอัปเดตการเข้าช่วยเหลือผู้ประสบภัย' : 'ตรวจสอบสถานะและอัปเดตข้อมูลผู้ประสบภัย'),
                 'manage-map': 'เพิ่มหรือลบจุดรับของยังชีพเพื่อให้ประชาชนทราบผ่านแผนที่',
                 'reports': 'ดูรายงานและส่งออกข้อมูลเหตุการณ์ทั้งหมดเป็นไฟล์ CSV',
                 'users': 'จัดการสิทธิ์และข้อมูลผู้ใช้งานในระบบ',
@@ -1612,7 +1669,6 @@
                     if(currentUser.role === 'user') {
                         displayData = globalData.filter(row => String(row.Submitter).trim() === String(currentUser.username).trim());
                     } else if (currentUser.role === 'agency') {
-                        // Agency เห็นเคสที่ถูก Forward มาแล้ว หรือ In Progress หรือ Closed
                         displayData = globalData.filter(row => ['Forwarded', 'In Progress', 'Closed'].includes(row.Status));
                     }
 
@@ -1622,16 +1678,7 @@
                         updateDashboardStats(globalData);
                         if (result.users) renderUsersTable(result.users);
                     } else if (currentUser.role === 'agency') {
-                        // Agency Dashboard Stats
-                        let p = 0, inp = 0, c = 0;
-                        displayData.forEach(row => {
-                            if(row.Status === 'Forwarded') p++;
-                            if(row.Status === 'In Progress') inp++;
-                            if(row.Severity && row.Severity.includes('แดง') && ['Forwarded', 'In Progress'].includes(row.Status)) c++;
-                        });
-                        animateValue('stat-agency-pending', p);
-                        animateValue('stat-agency-progress', inp);
-                        animateValue('stat-agency-critical', c);
+                        updateDashboardStats(displayData);
                         
                         const historyData = displayData.filter(row => row.Status === 'Closed' || row.Status === 'Rejected');
                         renderTable(historyData, 'history-table-body', true);
@@ -1645,6 +1692,7 @@
             finally { hideLoader(); }
         }
 
+        // --- Render Users Table (Admin Only) ---
         function renderUsersTable(users) {
             const tbody = document.getElementById('users-table-body');
             if (!tbody) return;
@@ -1972,7 +2020,6 @@
                 rejectSec.classList.add('hidden'); forwardSec.classList.remove('hidden');
                 document.getElementById('admin_reject_reason').removeAttribute('required');
                 document.getElementById('admin_severity').setAttribute('required', 'true');
-                // เอา attribute required ของ agency ออกจากฟอร์มแอดมิน เพราะย้ายไปให้กู้ภัยทำแล้ว
             } else if (status === "ไม่รับเคส") {
                 rejectSec.classList.remove('hidden'); forwardSec.classList.add('hidden');
                 document.getElementById('admin_reject_reason').setAttribute('required', 'true');
@@ -1990,7 +2037,6 @@
                 analysis_status: isAccepted ? "รับเคส" : "ไม่รับเคส",
                 reject_reason: isAccepted ? "" : document.getElementById('admin_reject_reason').value,
                 severity: isAccepted ? document.getElementById('admin_severity').value : ""
-                // ตัด agency ทิ้ง ไม่ต้องส่งไปจากฟอร์มแอดมิน
             };
             showLoader("กำลังบันทึก...");
             const res = await postToGAS(payload);
@@ -2025,7 +2071,6 @@
             const caseId = document.getElementById('accept_case_id').value;
             showLoader("กำลังยืนยันรับเคส...");
             
-            // ดึงข้อมูลหน่วยงานจาก Modal กู้ภัย
             const payload = {
                 action: "agency_accept",
                 caseId: caseId,
@@ -2106,7 +2151,6 @@
                 else if(row.Status === "Closed") statusBadge = '<span class="px-2.5 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-md text-xs font-semibold border border-emerald-100 dark:border-emerald-800">ยุติเรื่อง</span>';
                 else if(row.Status === "Rejected") statusBadge = '<span class="px-2.5 py-1 bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 rounded-md text-xs font-semibold border border-rose-100 dark:border-rose-800">ไม่รับเคส</span>';
 
-                // จัดการแท็กสี ความรุนแรง
                 let sevBadge = '<span class="text-slate-400">-</span>';
                 if(row.Severity && row.Severity.includes('แดง')) sevBadge = '<span class="flex items-center w-max gap-1.5 text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-900/50 px-2 py-1 rounded-md border border-rose-200 dark:border-rose-800"><span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>วิกฤต</span>';
                 else if(row.Severity && row.Severity.includes('เหลือง')) sevBadge = '<span class="flex items-center w-max gap-1.5 text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/50 px-2 py-1 rounded-md border border-amber-200 dark:border-amber-800"><span class="w-2 h-2 rounded-full bg-amber-500"></span>เร่งด่วน</span>';
@@ -2153,18 +2197,30 @@
 
                 const delayClass = index < 10 ? `delay-${index * 100}` : '';
                 
-                // History List กับ Main List ใช้ Layout เดียวกันแล้ว (เพิ่มช่องความรุนแรง)
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800 transition-colors animate-fade-in-up ${delayClass}">
-                        <td class="px-6 py-4 font-semibold text-blue-700 dark:text-blue-400">${unreadDot}${row.ID || '-'}</td>
-                        <td class="px-6 py-4 text-slate-600 dark:text-slate-400">${dateStr}</td>
-                        <td class="px-6 py-4 font-medium text-slate-800 dark:text-slate-200">${row.Name || '-'}</td>
-                        <td class="px-6 py-4 truncate max-w-[150px] text-slate-600 dark:text-slate-400" title="${row.Category}">${row.Category ? row.Category.split(':')[0] : '-'}</td>
-                        <td class="px-6 py-4">${sevBadge}</td>
-                        <td class="px-6 py-4">${statusBadge}</td>
-                        <td class="px-6 py-4 text-center">${actionBtn}</td>
-                    </tr>
-                `;
+                if (isHistoryView) {
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800 transition-colors animate-fade-in-up ${delayClass}">
+                            <td class="px-6 py-4 font-semibold text-blue-700 dark:text-blue-400">${row.ID || '-'}</td>
+                            <td class="px-6 py-4 text-slate-600 dark:text-slate-400">${dateStr}</td>
+                            <td class="px-6 py-4 truncate max-w-[200px] text-slate-600 dark:text-slate-400" title="${row.Category}">${row.Category ? row.Category.split(':')[0] : '-'}</td>
+                            <td class="px-6 py-4">${sevBadge}</td>
+                            <td class="px-6 py-4">${statusBadge}</td>
+                            <td class="px-6 py-4 text-center">${actionBtn}</td>
+                        </tr>
+                    `;
+                } else {
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800 transition-colors animate-fade-in-up ${delayClass}">
+                            <td class="px-6 py-4 font-semibold text-blue-700 dark:text-blue-400">${unreadDot}${row.ID || '-'}</td>
+                            <td class="px-6 py-4 text-slate-600 dark:text-slate-400">${dateStr}</td>
+                            <td class="px-6 py-4 font-medium text-slate-800 dark:text-slate-200">${row.Name || '-'}</td>
+                            <td class="px-6 py-4 truncate max-w-[150px] text-slate-600 dark:text-slate-400" title="${row.Category}">${row.Category ? row.Category.split(':')[0] : '-'}</td>
+                            <td class="px-6 py-4">${sevBadge}</td>
+                            <td class="px-6 py-4">${statusBadge}</td>
+                            <td class="px-6 py-4 text-center">${actionBtn}</td>
+                        </tr>
+                    `;
+                }
             });
         }
 
@@ -2209,7 +2265,6 @@
                 animateValue('stat-closed', closed);
                 animateValue('stat-rejected', rejected);
             } else if (currentUser && currentUser.role === 'agency') {
-                // สำหรับหน้า Dashboard หน่วยงานโดยเฉพาะ ให้ดึงข้อมูลมาแยกสี
                 let p = 0, r = 0, y = 0, g = 0;
                 data.forEach(row => {
                     if (row.Status === 'Forwarded' || row.Status === 'In Progress') {
