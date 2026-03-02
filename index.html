@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FloodCare+ | ระบบรับแจ้งเหตุและช่วยเหลือผู้ประสบภัย</title>
-    <!-- เพิ่ม Tailwind Config เพื่อเปิดใช้งาน Dark Mode แบบ Class -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -37,44 +36,30 @@
             }
         }
         
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { @apply bg-transparent; }
         ::-webkit-scrollbar-thumb { @apply bg-slate-300 dark:bg-slate-600 rounded-full; }
         ::-webkit-scrollbar-thumb:hover { @apply bg-slate-400 dark:bg-slate-500; }
 
-        /* Loader Animation */
         .spinner { border: 3px solid rgba(0, 0, 0, 0.1); border-left-color: #2563eb; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
         .dark .spinner { border-left-color: #60a5fa; border: 3px solid rgba(255,255,255,0.1); }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Custom Animations */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in-up {
-            animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in-up { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
         .delay-100 { animation-delay: 100ms; }
         .delay-200 { animation-delay: 200ms; }
         .delay-300 { animation-delay: 300ms; }
         .delay-400 { animation-delay: 400ms; }
         
-        /* Stat Icon Wrapper */
         .stat-icon { transition: transform 0.3s ease; }
         .glass-card:hover .stat-icon { transform: scale(1.15) rotate(5deg); }
 
-        /* Localized Rain Effect */
         .rain-cloud-container { position: relative; overflow: hidden; border-radius: 12px; }
         .raindrop {
             position: absolute;
             background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(96, 165, 250, 0.8));
-            width: 2px;
-            height: 12px;
-            border-radius: 50%;
-            animation: fall linear infinite;
+            width: 2px; height: 12px; border-radius: 50%; animation: fall linear infinite;
         }
         @keyframes fall {
             0% { transform: translateY(-10px); opacity: 0; }
@@ -89,9 +74,7 @@
     <!-- Background Pattern -->
     <div class="absolute inset-0 z-[-1] pointer-events-none opacity-30 dark:opacity-5 mix-blend-multiply" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'#94a3b8\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
 
-    <!-- Theme Overlay Effect (Sun/Moon icon pops up on theme toggle) -->
-    <div id="theme-icon-overlay" class="fixed inset-0 z-[9999] pointer-events-none flex items-center justify-center transition-all duration-[600ms] opacity-0 scale-50">
-    </div>
+    <div id="theme-icon-overlay" class="fixed inset-0 z-[9999] pointer-events-none flex items-center justify-center transition-all duration-[600ms] opacity-0 scale-50"></div>
 
     <!-- Global Loader -->
     <div id="loader" class="fixed inset-0 bg-white/80 dark:bg-slate-900/80 z-[100] flex flex-col items-center justify-center backdrop-blur-md transition-opacity duration-300 pointer-events-none opacity-0 hidden">
@@ -104,31 +87,23 @@
 
     <!-- ================= LOGIN / REGISTER VIEW ================= -->
     <div id="auth-view" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-950 overflow-hidden transition-colors duration-500">
-        
-        <!-- Ambient Glowing Orbs Background -->
+        <canvas id="authCanvas" class="absolute inset-0 w-full h-full z-0 pointer-events-none"></canvas>
         <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/30 dark:bg-indigo-600/20 rounded-full blur-[100px] z-0 pointer-events-none"></div>
         <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-400/20 dark:bg-blue-600/20 rounded-full blur-[100px] z-0 pointer-events-none"></div>
-        
-        <!-- Interactive Particle Canvas -->
-        <canvas id="authCanvas" class="absolute inset-0 w-full h-full z-0 pointer-events-none"></canvas>
 
         <div class="glass-card w-full max-w-md rounded-3xl overflow-hidden animate-fade-in-up border border-slate-200/80 dark:border-slate-700/80 z-10 relative shadow-2xl">
             <div class="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-800 p-8 text-center text-white relative overflow-hidden">
-                <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-                <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                 <svg class="w-14 h-14 mx-auto mb-3 drop-shadow-md relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 21s2-2 4-2 4 2 4 2 4-2 4-2 4 2 4 2"></path></svg>
                 <h2 class="text-3xl font-bold relative z-10 tracking-tight">FloodCare+</h2>
                 <p class="text-blue-100/90 text-sm mt-2 relative z-10 font-medium">ระบบรับแจ้งเหตุและช่วยเหลือผู้ประสบภัยน้ำท่วม</p>
             </div>
             
             <div class="p-8 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md">
-                <!-- Tabs -->
                 <div class="flex border-b border-slate-200 dark:border-slate-700 mb-6">
                     <button onclick="toggleAuth('login')" id="tab-login" class="flex-1 py-3 text-center font-semibold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition-colors">เข้าสู่ระบบ</button>
                     <button onclick="toggleAuth('register')" id="tab-register" class="flex-1 py-3 text-center font-medium text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors border-b-2 border-transparent">ลงทะเบียน</button>
                 </div>
 
-                <!-- Login Form -->
                 <form id="form-login" onsubmit="handleLogin(event)" class="space-y-5 relative">
                     <div>
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">ชื่อผู้ใช้งาน (Username)</label>
@@ -146,7 +121,6 @@
                     <button type="submit" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">เข้าสู่ระบบ</button>
                 </form>
 
-                <!-- Register Form -->
                 <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden max-h-[55vh] overflow-y-auto pr-2 custom-scrollbar relative">
                     <div>
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">ชื่อ-นามสกุล (Name)</label>
@@ -166,7 +140,7 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">ยืนยันรหัสผ่าน (Confirm Password)</label>
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">ยืนยันรหัสผ่าน</label>
                         <div class="relative">
                             <input type="password" id="reg_confirm_password" required minlength="6" maxlength="2000" placeholder="กรอกรหัสผ่านอีกครั้ง" class="input-style pr-12">
                             <button type="button" onclick="togglePassword('reg_confirm_password', this)" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">
@@ -182,7 +156,8 @@
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">ประเภทบัญชี (Role)</label>
                         <select id="reg_role" class="input-style cursor-pointer appearance-none">
                             <option value="user">ผู้ประสบภัย / ผู้แจ้งเหตุ (User)</option>
-                            <option value="admin">เจ้าหน้าที่ศูนย์ฯ (Admin)</option>
+                            <option value="agency">ศูนย์ปฏิบัติการ / หน่วยงาน (Agency)</option>
+                            <option value="admin">เจ้าหน้าที่ส่วนกลาง (Admin)</option>
                         </select>
                     </div>
                     <button type="submit" class="w-full py-3 mt-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">สร้างบัญชีผู้ใช้</button>
@@ -209,26 +184,26 @@
                 
                 <!-- Menu Admin -->
                 <div id="menu-admin" class="hidden">
-                    <p class="px-3 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 mt-2">จัดการระบบ (Main)</p>
+                    <p class="px-3 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 mt-2">ส่วนกลาง (Admin)</p>
                     <div class="space-y-1.5">
                         <button onclick="switchView('dashboard')" class="w-full flex items-center gap-3 px-4 py-3 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-xl font-semibold nav-btn transition-all duration-300" data-view="dashboard">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                            Dashboard
+                            Dashboard ส่วนกลาง
                         </button>
                         <button onclick="switchView('list')" class="w-full flex items-center justify-between px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white rounded-xl font-medium nav-btn transition-all duration-300" data-view="list">
                             <div class="flex items-center gap-3">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                จัดการรายการแจ้งเหตุ
+                                จัดการคัดกรองเคส
                             </div>
                             <span id="badge-admin-list" class="hidden bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse shadow-lg shadow-rose-500/40">0</span>
                         </button>
                         <button onclick="switchView('manage-map')" class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white rounded-xl font-medium nav-btn transition-all duration-300" data-view="manage-map">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                            จัดการจุดแจกของ
+                            จัดการพิกัดจุดแจกของ
                         </button>
                         <button onclick="switchView('reports')" class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white rounded-xl font-medium nav-btn transition-all duration-300" data-view="reports">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                            รายงานสถิติ
+                            รายงานสถิติ (Export)
                         </button>
                     </div>
 
@@ -245,9 +220,35 @@
                     </div>
                 </div>
 
+                <!-- Menu Agency (ศูนย์ปฏิบัติการพื้นที่) -->
+                <div id="menu-agency" class="hidden">
+                    <p class="px-3 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 mt-2">ศูนย์ปฏิบัติการพื้นที่ (Agency)</p>
+                    <div class="space-y-1.5">
+                        <button onclick="switchView('agency-dashboard')" class="w-full flex items-center gap-3 px-4 py-3 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-xl font-semibold nav-btn transition-all duration-300" data-view="agency-dashboard">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                            ภาพรวมพื้นที่รับผิดชอบ
+                        </button>
+                        <button onclick="switchView('list')" class="w-full flex items-center justify-between px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white rounded-xl font-medium nav-btn transition-all duration-300" data-view="list">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                                รับปฏิบัติงานช่วยเหลือ
+                            </div>
+                            <span id="badge-agency-list" class="hidden bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse shadow-lg shadow-rose-500/40">0</span>
+                        </button>
+                        <button onclick="switchView('history')" class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white rounded-xl font-medium nav-btn transition-all duration-300" data-view="history">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            ประวัติการลงพื้นที่
+                        </button>
+                        <button onclick="switchView('settings')" class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white rounded-xl font-medium nav-btn transition-all duration-300" data-view="settings">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            ตั้งค่าโปรไฟล์ส่วนตัว
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Menu User -->
                 <div id="menu-user" class="hidden">
-                    <p class="px-3 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 mt-2">บริการ (Services)</p>
+                    <p class="px-3 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 mt-2">บริการผู้ประสบภัย (User)</p>
                     <div class="space-y-1.5">
                         <button onclick="switchView('form')" class="w-full flex items-center gap-3 px-4 py-3 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-xl font-semibold nav-btn transition-all duration-300" data-view="form">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -284,10 +285,8 @@
                 </div>
             </nav>
 
-            <!-- Bottom Actions (Theme Toggle & Logout) -->
+            <!-- Bottom Actions -->
             <div class="p-4 border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/50 flex flex-col gap-3">
-                
-                <!-- Dark Mode Toggle Switch -->
                 <div class="flex items-center justify-between px-3 py-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
                     <span class="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-2">
                         <svg class="w-4 h-4 text-amber-500 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
@@ -341,9 +340,8 @@
                 
                 <!-- VIEW 1: DASHBOARD (ADMIN ONLY) -->
                 <div id="view-dashboard" class="view-section hidden max-w-7xl mx-auto">
-                    
                     <div class="mb-8 animate-fade-in-up">
-                        <h2 class="text-2xl font-bold text-slate-800 dark:text-white">ภาพรวมระบบ (Overview)</h2>
+                        <h2 class="text-2xl font-bold text-slate-800 dark:text-white">ภาพรวมระบบส่วนกลาง (Overview)</h2>
                         <p class="text-slate-500 dark:text-slate-400 mt-1">สรุปสถานการณ์การรับแจ้งเหตุทั้งหมดภายในระบบ ณ ปัจจุบัน</p>
                     </div>
 
@@ -366,7 +364,7 @@
                             <div class="absolute top-0 right-0 w-32 h-32 bg-amber-100 dark:bg-amber-900/40 rounded-bl-full -z-10 opacity-50 transition-transform group-hover:scale-110"></div>
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">กำลังดำเนินการ</p>
+                                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">ส่งหน่วยงานแล้ว</p>
                                     <h3 class="text-4xl font-extrabold text-amber-500 dark:text-amber-400 mt-2" id="stat-progress">0</h3>
                                 </div>
                                 <div class="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center text-amber-600 dark:text-amber-400 stat-icon shadow-inner">
@@ -379,7 +377,7 @@
                             <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-100 dark:bg-emerald-900/40 rounded-bl-full -z-10 opacity-50 transition-transform group-hover:scale-110"></div>
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">ยุติเรื่องแล้ว</p>
+                                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">ช่วยเหลือสำเร็จ</p>
                                     <h3 class="text-4xl font-extrabold text-emerald-500 dark:text-emerald-400 mt-2" id="stat-closed">0</h3>
                                 </div>
                                 <div class="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400 stat-icon shadow-inner">
@@ -392,7 +390,7 @@
                             <div class="absolute top-0 right-0 w-32 h-32 bg-rose-100 dark:bg-rose-900/40 rounded-bl-full -z-10 opacity-50 transition-transform group-hover:scale-110"></div>
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">ไม่รับเคส / ซ้ำซ้อน</p>
+                                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">แจ้งซ้ำซ้อน/ปฏิเสธ</p>
                                     <h3 class="text-4xl font-extrabold text-rose-500 dark:text-rose-400 mt-2" id="stat-rejected">0</h3>
                                 </div>
                                 <div class="w-12 h-12 rounded-full bg-rose-100 dark:bg-rose-900/50 flex items-center justify-center text-rose-600 dark:text-rose-400 stat-icon shadow-inner">
@@ -425,6 +423,69 @@
                     </div>
                 </div>
 
+                <!-- VIEW 1.5: AGENCY DASHBOARD (AGENCY ONLY) -->
+                <div id="view-agency-dashboard" class="view-section hidden max-w-7xl mx-auto">
+                    <div class="mb-8 animate-fade-in-up">
+                        <h2 class="text-2xl font-bold text-slate-800 dark:text-white">ภาพรวมพื้นที่รับผิดชอบ</h2>
+                        <p class="text-slate-500 dark:text-slate-400 mt-1">สรุปเคสที่ได้รับมอบหมายแยกตามระดับความรุนแรง</p>
+                    </div>
+
+                    <!-- เปลี่ยน Grid ให้รองรับ 4 กล่อง (รวม 1, แดง 1, เหลือง 1, เขียว 1) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="glass-card rounded-2xl p-6 relative overflow-hidden animate-fade-in-up delay-100 group border-l-4 border-l-blue-500">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-blue-100 dark:bg-blue-900/40 rounded-bl-full -z-10 opacity-50 transition-transform group-hover:scale-110"></div>
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">เคสรับผิดชอบทั้งหมด</p>
+                                    <h3 class="text-4xl font-extrabold text-slate-800 dark:text-white mt-2" id="stat-agency-pending">0</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400 stat-icon shadow-inner">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card rounded-2xl p-6 relative overflow-hidden animate-fade-in-up delay-200 group border-l-4 border-l-rose-500">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-rose-100 dark:bg-rose-900/40 rounded-bl-full -z-10 opacity-50 transition-transform group-hover:scale-110"></div>
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">🔴 วิกฤต (สีแดง)</p>
+                                    <h3 class="text-4xl font-extrabold text-rose-600 dark:text-rose-400 mt-2" id="stat-agency-red">0</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-rose-100 dark:bg-rose-900/50 flex items-center justify-center text-rose-600 dark:text-rose-400 stat-icon shadow-inner">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card rounded-2xl p-6 relative overflow-hidden animate-fade-in-up delay-300 group border-l-4 border-l-amber-500">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-amber-100 dark:bg-amber-900/40 rounded-bl-full -z-10 opacity-50 transition-transform group-hover:scale-110"></div>
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">🟡 เร่งด่วน (สีเหลือง)</p>
+                                    <h3 class="text-4xl font-extrabold text-amber-500 dark:text-amber-400 mt-2" id="stat-agency-yellow">0</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center text-amber-600 dark:text-amber-400 stat-icon shadow-inner">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card rounded-2xl p-6 relative overflow-hidden animate-fade-in-up delay-400 group border-l-4 border-l-emerald-500">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-100 dark:bg-emerald-900/40 rounded-bl-full -z-10 opacity-50 transition-transform group-hover:scale-110"></div>
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">🟢 ปกติ (สีเขียว)</p>
+                                    <h3 class="text-4xl font-extrabold text-emerald-500 dark:text-emerald-400 mt-2" id="stat-agency-green">0</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400 stat-icon shadow-inner">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- VIEW 2: FORM (USER ONLY) -->
                 <div id="view-form" class="view-section hidden max-w-4xl mx-auto animate-fade-in-up">
                     <form id="caseForm" onsubmit="submitCase(event)" class="space-y-6">
@@ -448,16 +509,16 @@
                                         <input type="text" id="entrepreneur_name" readonly class="input-style bg-slate-200 dark:bg-slate-800/80 cursor-not-allowed opacity-80" title="ดึงข้อมูลอัตโนมัติ ไม่สามารถแก้ไขได้">
                                     </div>
                                     <div class="col-span-1">
-                                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">จำนวนผู้ประสบภัยในจุดนี้ <span class="text-rose-500">*</span></label>
-                                        <input type="text" id="company_name" required maxlength="2000" class="input-style" placeholder="เช่น 3 คน (มีเด็ก 1 คน)">
+                                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">จำนวนผู้ประสบภัยที่ต้องการความช่วยเหลือ <span class="text-rose-500">*</span></label>
+                                        <input type="text" id="company_name" required maxlength="2000" class="input-style" placeholder="เช่น 3 คน (มีเด็ก 1, ผู้สูงอายุ 1)">
                                     </div>
                                     <div class="col-span-2 md:col-span-1">
                                         <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">เบอร์ติดต่อ</label>
                                         <input type="text" id="contact_number" readonly class="input-style bg-slate-200 dark:bg-slate-800/80 cursor-not-allowed opacity-80" placeholder="ไม่พบข้อมูลเบอร์โทรศัพท์" title="ดึงข้อมูลอัตโนมัติ ไม่สามารถแก้ไขได้">
                                     </div>
                                     <div class="col-span-2 md:col-span-1">
-                                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">พิกัด / ที่อยู่แบบละเอียด <span class="text-rose-500">*</span></label>
-                                        <input type="text" id="location" required maxlength="2000" placeholder="บ้านเลขที่, ซอย, จุดสังเกตที่ชัดเจน..." class="input-style">
+                                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">พิกัด (ลิงก์ Google Maps) / ที่อยู่แบบละเอียด <span class="text-rose-500">*</span></label>
+                                        <input type="text" id="location" required maxlength="2000" placeholder="วางลิงก์ GPS หรือพิมพ์ที่อยู่ชัดเจน..." class="input-style">
                                     </div>
                                     <div class="col-span-2">
                                         <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">ประเภทความช่วยเหลือที่ต้องการ <span class="text-rose-500">*</span></label>
@@ -470,7 +531,13 @@
                                     </div>
                                     <div class="col-span-2">
                                         <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">รายละเอียดสถานการณ์เบื้องต้น <span class="text-rose-500">*</span></label>
-                                        <textarea id="problem_desc" rows="4" required maxlength="2000" class="input-style resize-none" placeholder="เช่น ระดับน้ำสูงเท่าไหร่, มีผู้ป่วยติดเตียงหรือไม่, ต้องการอะไรด่วนที่สุด..."></textarea>
+                                        <textarea id="problem_desc" rows="4" required maxlength="2000" class="input-style resize-none" placeholder="เช่น ระดับน้ำสูงเท่าไหร่, ต้องการอะไรด่วนที่สุด..."></textarea>
+                                    </div>
+                                    <!-- ส่วนเพิ่ม: แนบรูปภาพ -->
+                                    <div class="col-span-2">
+                                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">แนบรูปภาพสถานที่เกิดเหตุ (ถ้ามี)</label>
+                                        <input type="file" id="case_image" accept="image/*" class="input-style !py-2 cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-slate-700 dark:file:text-slate-200">
+                                        <p class="text-xs text-slate-500 mt-1">ไฟล์ภาพขนาดไม่เกิน 5MB</p>
                                     </div>
                                 </div>
                             </div>
@@ -484,7 +551,7 @@
                     </form>
                 </div>
 
-                <!-- VIEW 3: CASE LIST (Shared Admin/User) -->
+                <!-- VIEW 3: CASE LIST (Shared Admin/User/Agency) -->
                 <div id="view-list" class="view-section hidden h-full flex flex-col max-w-7xl mx-auto animate-fade-in-up">
                     <div class="glass-card rounded-2xl shadow-sm flex-1 flex flex-col overflow-hidden">
                         <div class="p-6 border-b border-slate-200/60 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -505,12 +572,13 @@
                                         <th class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">วันที่แจ้งเหตุ</th>
                                         <th class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">ผู้แจ้งเรื่อง</th>
                                         <th class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">ประเภทการแจ้ง</th>
+                                        <th class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">ความรุนแรง</th>
                                         <th class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">สถานะ</th>
                                         <th class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 text-center">จัดการ</th>
                                     </tr>
                                 </thead>
                                 <tbody id="case-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/50 bg-white/80 dark:bg-slate-800/50">
-                                    <tr><td colspan="6" class="text-center py-12 text-slate-400 font-medium">กำลังโหลดข้อมูล...</td></tr>
+                                    <tr><td colspan="7" class="text-center py-12 text-slate-400 font-medium">กำลังโหลดข้อมูล...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -528,7 +596,6 @@
                             <!-- Cloud & Rain Emoji Animation -->
                             <div class="rain-cloud-container w-32 h-32 flex flex-col items-center justify-start z-10 relative">
                                 <div class="text-6xl absolute top-0 z-20 drop-shadow-lg">☁️</div>
-                                <!-- Script will generate raindrops here -->
                                 <div id="mini-rain" class="absolute top-10 left-0 w-full h-full"></div>
                             </div>
                             
@@ -576,8 +643,8 @@
                 <div id="view-manage-map" class="view-section hidden max-w-5xl mx-auto animate-fade-in-up">
                     <div class="glass-card rounded-2xl shadow-sm border border-slate-200/60 dark:border-slate-700 overflow-hidden">
                         <div class="p-6 border-b border-slate-200/60 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50">
-                            <h2 class="text-xl font-bold text-slate-800 dark:text-white">จัดการจุดแจกของยังชีพ</h2>
-                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">เพิ่มพิกัดหรือประกาศจุดตั้งศูนย์ช่วยเหลือชั่วคราว (ระบบจำลอง)</p>
+                            <h2 class="text-xl font-bold text-slate-800 dark:text-white">จัดการพิกัดจุดแจกของยังชีพ</h2>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">เพิ่มพิกัดหรือประกาศจุดตั้งศูนย์ช่วยเหลือชั่วคราวเพื่อให้ประชาชนทราบ (ระบบจำลอง)</p>
                         </div>
                         <div class="p-6 bg-slate-50/50 dark:bg-slate-900/50">
                             <form class="grid grid-cols-1 md:grid-cols-3 gap-4" onsubmit="alert('ฟังก์ชันจำลอง: บันทึกพิกัดจุดแจกของสำเร็จ'); event.preventDefault();">
@@ -643,7 +710,7 @@
                         <div class="p-6 border-b border-slate-200/60 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                             <div>
                                 <h2 class="text-xl font-bold text-slate-800 dark:text-white">จัดการบัญชีผู้ใช้งาน</h2>
-                                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">รายชื่อผู้มีสิทธิ์เข้าใช้งานระบบทั้งหมด</p>
+                                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">รายชื่อผู้มีสิทธิ์เข้าใช้งานระบบทั้งหมด (สิทธิ์แอดมิน, ผู้ประสบภัย, และศูนย์ปฏิบัติการ)</p>
                             </div>
                             <button class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-semibold shadow-md transition-colors flex items-center gap-2" onclick="openAddUserModal()">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
@@ -735,6 +802,7 @@
                                         <th class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">รหัสอ้างอิง</th>
                                         <th class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">วันที่แจ้งเหตุ</th>
                                         <th class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">ประเภทการแจ้ง</th>
+                                        <th class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">ความรุนแรง</th>
                                         <th class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">สถานะล่าสุด</th>
                                         <th class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 text-center">ดูข้อมูล</th>
                                     </tr>
@@ -765,7 +833,7 @@
                         </div>
                         <div class="glass-card p-6 rounded-2xl border-l-4 border-l-indigo-500">
                             <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-2">Q: หากต้องการแนบไฟล์ภาพสถานที่เกิดเหตุต้องทำอย่างไร?</h3>
-                            <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">A: ในเวอร์ชันนี้กรุณาแจ้งพิกัดและรายละเอียดสถานการณ์ให้ชัดเจนที่สุดในช่องข้อความ หากเจ้าหน้าที่ต้องการภาพเพิ่มเติม จะทำการติดต่อกลับไปยังเบอร์โทรศัพท์ที่ท่านได้ให้ไว้ครับ</p>
+                            <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">A: ท่านสามารถแนบไฟล์รูปภาพสถานการณ์จริงได้ในขณะที่กรอกฟอร์มแจ้งเหตุ เพื่อให้เจ้าหน้าที่ประเมินความรุนแรงได้อย่างแม่นยำครับ</p>
                         </div>
                         <div class="glass-card p-6 rounded-2xl border-l-4 border-l-amber-500">
                             <h3 class="font-bold text-lg text-slate-800 dark:text-white mb-2">Q: จุดสีแดงที่เมนูคืออะไร?</h3>
@@ -786,7 +854,7 @@
                     <div class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-800 dark:text-white">ดำเนินการเคส: <span id="modal-case-id" class="text-indigo-600 dark:text-indigo-400"></span></h3>
+                    <h3 class="font-bold text-lg text-slate-800 dark:text-white">ดำเนินการประเมินเคส: <span id="modal-case-id" class="text-indigo-600 dark:text-indigo-400"></span></h3>
                 </div>
                 <button onclick="closeAdminModal()" class="text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 p-1.5 rounded-lg transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
@@ -805,7 +873,7 @@
                     <div class="flex gap-4 mb-5">
                         <label class="flex-1 flex items-center justify-center gap-2 cursor-pointer border-2 border-slate-200 dark:border-slate-700 rounded-xl p-4 hover:border-indigo-400 dark:hover:border-indigo-500 transition-all has-[:checked]:border-indigo-600 dark:has-[:checked]:border-indigo-400 has-[:checked]:bg-indigo-50 dark:has-[:checked]:bg-indigo-900/30 group">
                             <input type="radio" name="admin_status" value="รับเคส" required onchange="toggleAdminForm()" class="w-4 h-4 text-indigo-600 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:ring-indigo-600">
-                            <span class="font-semibold text-slate-600 dark:text-slate-400 group-has-[:checked]:text-indigo-700 dark:group-has-[:checked]:text-indigo-300">รับเรื่อง (ประสานงานต่อ)</span>
+                            <span class="font-semibold text-slate-600 dark:text-slate-400 group-has-[:checked]:text-indigo-700 dark:group-has-[:checked]:text-indigo-300">รับเรื่อง (รอกู้ภัยดำเนินการ)</span>
                         </label>
                         <label class="flex-1 flex items-center justify-center gap-2 cursor-pointer border-2 border-slate-200 dark:border-slate-700 rounded-xl p-4 hover:border-rose-400 dark:hover:border-rose-500 transition-all has-[:checked]:border-rose-600 dark:has-[:checked]:border-rose-400 has-[:checked]:bg-rose-50 dark:has-[:checked]:bg-rose-900/30 group">
                             <input type="radio" name="admin_status" value="ไม่รับเคส" required onchange="toggleAdminForm()" class="w-4 h-4 text-rose-600 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 focus:ring-rose-600">
@@ -813,45 +881,27 @@
                         </label>
                     </div>
 
+                    <!-- ส่วนประเมินความรุนแรงของแอดมิน (เอาช่องส่งต่อหน่วยงานออกไปให้หน่วยงานกรอกเอง) -->
+                    <div id="admin-forward-sec" class="hidden mb-4 p-5 bg-indigo-50/50 dark:bg-indigo-900/10 border border-indigo-200 dark:border-indigo-800/50 rounded-xl animate-fade-in-up">
+                        <div>
+                            <label class="block text-sm font-semibold text-indigo-900 dark:text-indigo-300 mb-2">ประเมินระดับความรุนแรง (Severity) <span class="text-rose-500">*</span></label>
+                            <select id="admin_severity" class="input-style cursor-pointer border-indigo-200 dark:border-indigo-800 focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="🟢 สีเขียว (ปกติ/รอการช่วยเหลือตามคิว)">🟢 สีเขียว (ปกติ/รอการช่วยเหลือตามคิว)</option>
+                                <option value="🟡 สีเหลือง (เร่งด่วน มีเด็ก/คนชรา)">🟡 สีเหลือง (เร่งด่วน มีเด็ก/คนชรา)</option>
+                                <option value="🔴 สีแดง (วิกฤต อันตรายถึงชีวิต)">🔴 สีแดง (วิกฤต อันตรายถึงชีวิต)</option>
+                            </select>
+                            <p class="text-xs text-slate-500 mt-2">เมื่อประเมินระดับความรุนแรงแล้ว เคสจะถูกส่งต่อไปยังศูนย์ปฏิบัติการพื้นที่เพื่อให้กู้ภัยรับเคส</p>
+                        </div>
+                    </div>
+
                     <div id="admin-reject-sec" class="hidden mb-4 p-5 bg-rose-50/50 dark:bg-rose-900/10 border border-rose-200 dark:border-rose-800/50 rounded-xl animate-fade-in-up">
-                        <label class="block text-sm font-semibold text-rose-900 dark:text-rose-300 mb-2">ระบุเหตุผล <span class="text-rose-500">*</span></label>
+                        <label class="block text-sm font-semibold text-rose-900 dark:text-rose-300 mb-2">ระบุเหตุผลที่ปฏิเสธเคส <span class="text-rose-500">*</span></label>
                         <select id="admin_reject_reason" class="input-style cursor-pointer border-rose-200 dark:border-rose-800 focus:ring-rose-500 focus:border-rose-500">
                             <option value="">-- เลือกเหตุผล --</option>
                             <option value="เหตุการณ์ซ้ำซ้อน / แจ้งไปแล้ว">เหตุการณ์ซ้ำซ้อน / แจ้งไปแล้ว</option>
                             <option value="อยู่นอกพื้นที่ให้บริการ">อยู่นอกพื้นที่ให้บริการ</option>
                             <option value="ข้อมูลไม่เพียงพอต่อการเข้าช่วยเหลือ">ข้อมูลไม่เพียงพอต่อการเข้าช่วยเหลือ</option>
                         </select>
-                    </div>
-
-                    <div id="admin-forward-sec" class="hidden mb-4 p-5 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-800/50 rounded-xl animate-fade-in-up">
-                        <h4 class="font-bold text-emerald-800 dark:text-emerald-400 mb-4 flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
-                            ระบุหน่วยงานเข้าช่วยเหลือพื้นที่
-                        </h4>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">หน่วยงานรับผิดชอบ <span class="text-rose-500">*</span></label>
-                                <select id="admin_agency" class="input-style cursor-pointer border-slate-300 focus:ring-emerald-500 focus:border-emerald-500">
-                                    <option value="">-- เลือกหน่วยงาน --</option>
-                                    <option value="กรมป้องกันและบรรเทาสาธารณภัย (ปภ.)">กรมป้องกันและบรรเทาสาธารณภัย (ปภ.)</option>
-                                    <option value="มูลนิธิร่วมกตัญญู / ป่อเต็กตึ๊ง">มูลนิธิร่วมกตัญญู / ป่อเต็กตึ๊ง</option>
-                                    <option value="องค์กรปกครองส่วนท้องถิ่น (อบต./เทศบาล)">องค์กรปกครองส่วนท้องถิ่น (อบต./เทศบาล)</option>
-                                    <option value="ทหาร / ตำรวจในพื้นที่">ทหาร / ตำรวจในพื้นที่</option>
-                                    <option value="กระทรวงสาธารณสุข (สธ.)">กระทรวงสาธารณสุข (สธ.)</option>
-                                    <option value="อาสาสมัครภาคประชาชน">อาสาสมัครภาคประชาชน</option>
-                                </select>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">ชื่อผู้ประสานงาน (ถ้ามี)</label>
-                                    <input type="text" id="admin_agency_contact" maxlength="2000" class="input-style focus:ring-emerald-500 focus:border-emerald-500">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">เบอร์ติดต่อหน่วยงาน</label>
-                                    <input type="tel" id="admin_agency_phone" pattern="[0-9]{9,10}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="input-style focus:ring-emerald-500 focus:border-emerald-500">
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="flex justify-end gap-3 pt-5 border-t border-slate-100 dark:border-slate-800 mt-6">
@@ -863,7 +913,61 @@
         </div>
     </div>
 
-    <!-- Modal Admin Close Case (ยุติเรื่อง) -->
+    <!-- Modal Agency Accept Case (กู้ภัยรับเคส + ระบุทีม) -->
+    <div id="accept-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[65] flex items-center justify-center p-4 hidden transition-opacity">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col transform transition-transform scale-95 border border-slate-200 dark:border-slate-700" id="accept-modal-content">
+            <div class="px-6 py-4 border-b border-blue-100 dark:border-blue-800/50 flex justify-between items-center bg-blue-50 dark:bg-blue-900/20">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-300 flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    </div>
+                    <h3 class="font-bold text-lg text-blue-800 dark:text-blue-400">ยืนยันการรับเคส: <span id="accept-modal-case-id" class="text-blue-600"></span></h3>
+                </div>
+                <button onclick="closeAcceptCaseModal()" class="text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-blue-100 dark:hover:bg-blue-800 p-1.5 rounded-lg transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            
+            <div class="p-6 bg-white dark:bg-slate-900">
+                <form id="acceptActionForm" onsubmit="submitAcceptCase(event)">
+                    <input type="hidden" id="accept_case_id">
+                    
+                    <div class="mb-4">
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">เมื่อกดยืนยัน สถานะของเคสจะเปลี่ยนเป็น <span class="font-bold text-teal-600">"กำลังเข้าช่วยเหลือ"</span> เพื่อให้ผู้ประสบภัยทราบทันที</p>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">หน่วยงานที่ลงพื้นที่ <span class="text-rose-500">*</span></label>
+                                <select id="accept_agency" required class="input-style cursor-pointer border-slate-300 focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="">-- เลือกหน่วยงาน --</option>
+                                    <option value="กรมป้องกันและบรรเทาสาธารณภัย (ปภ.)">กรมป้องกันและบรรเทาสาธารณภัย (ปภ.)</option>
+                                    <option value="มูลนิธิร่วมกตัญญู / ป่อเต็กตึ๊ง">มูลนิธิร่วมกตัญญู / ป่อเต็กตึ๊ง</option>
+                                    <option value="องค์กรปกครองส่วนท้องถิ่น (อบต./เทศบาล)">องค์กรปกครองส่วนท้องถิ่น (อบต./เทศบาล)</option>
+                                    <option value="ทหาร / ตำรวจในพื้นที่">ทหาร / ตำรวจในพื้นที่</option>
+                                    <option value="อาสาสมัครภาคประชาชน">อาสาสมัครภาคประชาชน</option>
+                                </select>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">ชื่อหัวหน้าชุด/ผู้ประสานงาน</label>
+                                    <input type="text" id="accept_agency_contact" maxlength="2000" class="input-style focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">เบอร์ติดต่อทีมกู้ภัย</label>
+                                    <input type="tel" id="accept_agency_phone" pattern="[0-9]{9,10}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="input-style focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800 mt-6">
+                        <button type="button" onclick="closeAcceptCaseModal()" class="px-5 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-semibold transition-colors">ยกเลิก</button>
+                        <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-md shadow-blue-500/30 transition-all transform hover:-translate-y-0.5">ยืนยันรับเคสและลงพื้นที่</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Admin/Agency Close Case (ยุติเรื่อง) -->
     <div id="close-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[65] flex items-center justify-center p-4 hidden transition-opacity">
         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col transform transition-transform scale-95 border border-slate-200 dark:border-slate-700" id="close-modal-content">
             <div class="px-6 py-4 border-b border-emerald-100 dark:border-emerald-800/50 flex justify-between items-center bg-emerald-50 dark:bg-emerald-900/20">
@@ -902,8 +1006,10 @@
             </div>
             <div class="p-6 overflow-y-auto custom-scrollbar space-y-6 bg-white dark:bg-slate-900">
                 
-                <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm">
-                    <div class="grid grid-cols-2 gap-y-4 gap-x-6 text-sm">
+                <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm relative overflow-hidden">
+                    <div id="dt_severity_bar" class="absolute top-0 left-0 w-full h-1.5 bg-slate-200 dark:bg-slate-700"></div>
+
+                    <div class="grid grid-cols-2 gap-y-4 gap-x-6 text-sm mt-2">
                         <div>
                             <p class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide mb-1">สถานะปัจจุบัน</p>
                             <div id="dt_status" class="font-medium"></div>
@@ -913,6 +1019,12 @@
                             <div id="dt_date" class="font-medium text-slate-800 dark:text-slate-200"></div>
                         </div>
                         <div class="col-span-2 border-t border-slate-100 dark:border-slate-700 pt-4 mt-2"></div>
+                        
+                        <div id="dt_severity_section" class="col-span-2 hidden mb-2">
+                            <p class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide mb-1">ระดับความรุนแรง</p>
+                            <div id="dt_severity" class="font-bold text-base"></div>
+                        </div>
+
                         <div>
                             <p class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide mb-1">ผู้แจ้ง / ผู้ประสบภัย</p>
                             <div id="dt_name" class="font-bold text-slate-800 dark:text-white text-base"></div>
@@ -927,7 +1039,7 @@
                         </div>
                         <div>
                             <p class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide mb-1">พิกัด / ที่อยู่</p>
-                            <div id="dt_location" class="font-medium text-slate-700 dark:text-slate-300"></div>
+                            <div id="dt_location" class="font-medium text-slate-700 dark:text-slate-300 overflow-hidden break-words"></div>
                         </div>
                     </div>
                 </div>
@@ -937,15 +1049,17 @@
                     <div class="space-y-3">
                         <div id="dt_category" class="font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800/50 px-3 py-2 rounded-lg inline-block text-sm"></div>
                         <div id="dt_problem" class="font-medium text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 p-4 rounded-xl leading-relaxed whitespace-pre-wrap shadow-inner text-sm"></div>
+                        
+                        <div id="dt_image_section" class="hidden mt-3">
+                            <p class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide mb-2">ภาพประกอบ</p>
+                            <img id="dt_image" src="" alt="ภาพสถานที่เกิดเหตุ" class="w-full h-auto max-h-96 object-contain rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm bg-slate-100 dark:bg-slate-800">
+                        </div>
                     </div>
                 </div>
 
-                <!-- Admin Process Result -->
                 <div id="dt_result_section" class="hidden">
-                    <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">ผลการดำเนินการจากศูนย์ฯ</p>
-                    <div class="p-5 rounded-xl text-sm shadow-sm" id="dt_result_box">
-                        <!-- Dynamic content -->
-                    </div>
+                    <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">ผลการดำเนินการจากศูนย์ฯ / หน่วยงาน</p>
+                    <div class="p-5 rounded-xl text-sm shadow-sm" id="dt_result_box"></div>
                 </div>
             </div>
             <div class="p-5 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/80 flex justify-between items-center">
@@ -958,61 +1072,12 @@
         </div>
     </div>
 
-    <!-- Modal Admin Add User -->
-    <div id="add-user-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[75] flex items-center justify-center p-4 hidden transition-opacity">
-        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col transform transition-transform scale-95 border border-slate-200 dark:border-slate-700" id="add-user-modal-content">
-            <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/80">
-                <h3 class="font-bold text-lg text-slate-800 dark:text-white flex items-center gap-2">
-                    <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
-                    เพิ่มผู้ใช้งานใหม่
-                </h3>
-                <button onclick="closeAddUserModal()" class="text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 p-1.5 rounded-lg transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-            </div>
-            <div class="p-6 overflow-y-auto custom-scrollbar bg-white dark:bg-slate-900 max-h-[70vh]">
-                <form id="adminAddUserForm" onsubmit="submitAddUser(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">ชื่อ-นามสกุล</label>
-                        <input type="text" id="add_name" required pattern="[a-zA-Zก-ฮะ-์\s]+" minlength="2" title="กรุณากรอกเฉพาะตัวอักษรภาษาไทยหรือภาษาอังกฤษเท่านั้น" oninput="this.value = this.value.replace(/[^a-zA-Zก-ฮะ-์\s]/g, '')" class="input-style">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">ชื่อผู้ใช้งาน (Username)</label>
-                        <input type="text" id="add_username" required pattern="[a-zA-Z0-9]+" minlength="4" maxlength="20" class="input-style">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">รหัสผ่าน</label>
-                        <div class="relative">
-                            <input type="password" id="add_password" required minlength="6" class="input-style pr-12">
-                            <button type="button" onclick="togglePassword('add_password', this)" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">เบอร์ติดต่อ</label>
-                        <input type="tel" id="add_phone" required pattern="[0-9]{9,10}" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="input-style">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">ประเภทบัญชี (Role)</label>
-                        <select id="add_role" class="input-style cursor-pointer appearance-none">
-                            <option value="user">ผู้แจ้งเหตุ (User)</option>
-                            <option value="admin">เจ้าหน้าที่ศูนย์ฯ (Admin)</option>
-                        </select>
-                    </div>
-                    <div class="flex justify-end gap-3 pt-5 border-t border-slate-100 dark:border-slate-800 mt-2">
-                        <button type="button" onclick="closeAddUserModal()" class="px-5 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-semibold transition-colors">ยกเลิก</button>
-                        <button type="submit" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-md shadow-indigo-500/30 transition-all transform hover:-translate-y-0.5">เพิ่มผู้ใช้งาน</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <!-- Scripts -->
     <script>
         // ==========================================
         // ตั้งค่า Google Apps Script Web App URL ที่นี่
         // ==========================================
-        const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbz-EbeBe5-YaNvvlSlbV1ap1eqJF-sAA9bmLVx0E8wWey0yAzXHymywS0ycUBIVJEKiiA/exec"; 
+        const GAS_WEBAPP_URL = ""; 
         
         let currentUser = null; 
         let globalData = [];
@@ -1273,13 +1338,13 @@
                 let mockUser = currentUser;
                 if (payload.action === 'register') mockUser = { username: payload.username, role: payload.role, name: payload.name, phone: payload.phone };
                 else if (payload.action === 'login') {
-                    let role = payload.username.toLowerCase() === 'admin' ? 'admin' : 'user';
+                    let role = payload.username.toLowerCase() === 'admin' ? 'admin' : (payload.username.toLowerCase() === 'agency' ? 'agency' : 'user');
                     mockUser = { username: payload.username, role: role, name: "คุณ " + payload.username, phone: "0812345678" };
                 }
                 else if (payload.action === 'update_profile') {
                     mockUser = { ...currentUser, name: payload.new_name, phone: payload.new_phone };
                 }
-                else if (payload.action === 'delete_user') {
+                else if (payload.action === 'delete_user' || payload.action === 'agency_accept') {
                     return new Promise(resolve => setTimeout(() => resolve({status: "success"}), 800));
                 }
                 return new Promise(resolve => setTimeout(() => resolve({
@@ -1404,10 +1469,18 @@
             document.getElementById('auth-view').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
             
+            let roleText = "ผู้ประสบภัย";
+            if (currentUser.role === 'admin') roleText = "ศูนย์กลาง (Admin)";
+            if (currentUser.role === 'agency') roleText = "ศูนย์ปฏิบัติการพื้นที่";
+            
             document.getElementById('display_name').textContent = currentUser.name || currentUser.username;
-            document.getElementById('display_role').textContent = currentUser.role === 'admin' ? "เจ้าหน้าที่ศูนย์ฯ" : "ผู้ประสบภัย";
+            document.getElementById('display_role').textContent = roleText;
             document.getElementById('avatar').textContent = (currentUser.name || currentUser.username).charAt(0).toUpperCase();
-            document.getElementById('avatar').className = `w-9 h-9 shrink-0 rounded-full text-white flex items-center justify-center font-bold text-sm shadow-md ${currentUser.role === 'admin' ? 'bg-gradient-to-br from-indigo-500 to-purple-600' : 'bg-gradient-to-br from-emerald-500 to-teal-600'}`;
+            
+            let avBg = 'bg-gradient-to-br from-emerald-500 to-teal-600';
+            if(currentUser.role === 'admin') avBg = 'bg-gradient-to-br from-indigo-500 to-purple-600';
+            if(currentUser.role === 'agency') avBg = 'bg-gradient-to-br from-amber-500 to-orange-600';
+            document.getElementById('avatar').className = `w-9 h-9 shrink-0 rounded-full text-white flex items-center justify-center font-bold text-sm shadow-md ${avBg}`;
 
             document.getElementById('set_name').value = currentUser.name || currentUser.username;
             document.getElementById('set_phone').value = currentUser.phone || ""; 
@@ -1418,6 +1491,7 @@
             if(currentUser.role === 'admin') {
                 document.getElementById('menu-admin').classList.remove('hidden');
                 document.getElementById('menu-user').classList.add('hidden');
+                document.getElementById('menu-agency').classList.add('hidden');
                 switchView('dashboard');
                 
                 nameInput.removeAttribute('readonly');
@@ -1430,8 +1504,14 @@
                 phoneInput.value = ""; 
                 phoneInput.title = "เบอร์ติดต่อผู้ประสบภัย";
                 
+            } else if (currentUser.role === 'agency') {
+                document.getElementById('menu-admin').classList.add('hidden');
+                document.getElementById('menu-user').classList.add('hidden');
+                document.getElementById('menu-agency').classList.remove('hidden');
+                switchView('agency-dashboard');
             } else {
                 document.getElementById('menu-admin').classList.add('hidden');
+                document.getElementById('menu-agency').classList.add('hidden');
                 document.getElementById('menu-user').classList.remove('hidden');
                 switchView('news'); 
                 
@@ -1460,28 +1540,30 @@
             });
 
             const headers = { 
-                'dashboard': 'ภาพรวมระบบ (Dashboard)', 
+                'dashboard': 'ภาพรวมระบบส่วนกลาง (Dashboard)', 
+                'agency-dashboard': 'ภาพรวมพื้นที่รับผิดชอบ',
                 'form': 'สร้างฟอร์มแจ้งเหตุ', 
-                'list': currentUser.role === 'admin' ? 'จัดการรายการแจ้งเหตุ' : 'ติดตามสถานะการช่วยเหลือ',
-                'manage-map': 'จัดการจุดแจกของ',
-                'reports': 'รายงานสถิติ (Reports)',
-                'users': 'จัดการผู้ใช้งาน (Users)',
+                'list': currentUser.role === 'admin' ? 'จัดการคัดกรองเคส' : (currentUser.role === 'agency' ? 'รับปฏิบัติงานช่วยเหลือ' : 'ติดตามสถานะ'),
+                'manage-map': 'จัดการพิกัดจุดแจกของ',
+                'reports': 'รายงานสถิติ (Export)',
+                'users': 'จัดการบัญชีผู้ใช้งาน',
                 'settings': 'ตั้งค่าบัญชี (Settings)',
                 'news': 'ข่าวสาร & จุดรับของ',
-                'history': 'ประวัติการแจ้งเหตุ (History)',
+                'history': 'ประวัติการลงพื้นที่ / แจ้งเหตุ',
                 'faq': 'ศูนย์ช่วยเหลือ (FAQ)'
             };
             const subtitles = { 
-                'dashboard': 'สรุปข้อมูลสถานการณ์เหตุฉุกเฉินทั้งหมด', 
+                'dashboard': 'สรุปสถานการณ์เหตุฉุกเฉินทั้งหมดจากทุกพื้นที่', 
+                'agency-dashboard': 'สรุปเคสที่ได้รับมอบหมายและต้องเข้าดำเนินการเร่งด่วน',
                 'form': 'บันทึกข้อมูลและรายละเอียดที่ต้องการความช่วยเหลือ', 
-                'list': 'ตรวจสอบสถานะและอัปเดตข้อมูลผู้ประสบภัย',
-                'manage-map': 'จำลองการเพิ่มพิกัดจุดแจกของหรือศูนย์ช่วยเหลือ',
-                'reports': 'ดูรายงานและส่งออกข้อมูลพื้นที่เสี่ยงเป็นไฟล์ CSV',
-                'users': 'จัดการสิทธิ์และบัญชีผู้ใช้งานในระบบ',
+                'list': currentUser.role === 'admin' ? 'ตรวจสอบและคัดกรองส่งต่อให้หน่วยงานที่เกี่ยวข้อง' : 'ตรวจสอบสถานะและอัปเดตการเข้าช่วยเหลือผู้ประสบภัย',
+                'manage-map': 'เพิ่มหรือลบจุดรับของยังชีพเพื่อให้ประชาชนทราบผ่านแผนที่',
+                'reports': 'ดูรายงานและส่งออกข้อมูลเหตุการณ์ทั้งหมดเป็นไฟล์ CSV',
+                'users': 'จัดการสิทธิ์และข้อมูลผู้ใช้งานในระบบ',
                 'settings': 'แก้ไขข้อมูลส่วนตัวและเปลี่ยนรหัสผ่าน',
-                'news': 'แจ้งเตือนสภาพอากาศและแผนที่จุดช่วยเหลือ',
-                'history': 'ดูประวัติการร้องทุกข์ที่ได้รับการแก้ไขแล้ว',
-                'faq': 'คำถามที่พบบ่อยและข้อมูลที่เป็นประโยชน์'
+                'news': 'แจ้งเตือนสภาพอากาศและแผนที่จุดช่วยเหลือฉุกเฉิน',
+                'history': 'ประวัติเคสที่ยุติเรื่องหรือดำเนินการสำเร็จแล้ว',
+                'faq': 'คำถามที่พบบ่อยเกี่ยวกับการใช้งานระบบ'
             };
             
             document.getElementById('header-title').textContent = headers[viewId] || 'FloodCare+';
@@ -1505,11 +1587,14 @@
                     result = {
                         status: "success",
                         data: [
-                            { ID: "C-2602-002", Created_At: new Date().toISOString(), Submitter: currentUser.username, Name: "นาย สมชาย ใจดี", Company_Name: "3 คน (มีผู้สูงอายุ 1)", Phone: "0811111111", Contact: "0811111111", Location: "กทม", Category: "อพยพฉุกเฉิน / กู้ชีพ", Problem: "น้ำท่วมเข้าบ้านสูง 1 เมตร มีผู้สูงอายุ", Status: "New" },
-                            { ID: "C-2602-001", Created_At: new Date(Date.now() - 86400000*2).toISOString(), Submitter: "user123", Name: "นาง สมศรี รักการค้า", Company_Name: "5 คน", Phone: "0822222222", Contact: "0822222222", Location: "อยุธยา", Category: "อาหาร / น้ำดื่ม / ถุงยังชีพ", Problem: "ขาดแคลนน้ำดื่ม อาหารแห้ง", Status: "Forwarded", Agency: "ปภ. จังหวัด" }
+                            { ID: "C-2602-003", Created_At: new Date().toISOString(), Submitter: currentUser.username, Name: "นาย สมชาย ใจดี", Company_Name: "3 คน", Phone: "0811111111", Contact: "0811111111", Location: "กทม", Category: "อพยพฉุกเฉิน / กู้ชีพ", Problem: "น้ำท่วมเข้าบ้านสูง 1 เมตร มีผู้สูงอายุ", Status: "New", Severity: "" },
+                            { ID: "C-2602-002", Created_At: new Date(Date.now() - 86400000).toISOString(), Submitter: "user123", Name: "นาง สมศรี รักการค้า", Company_Name: "5 คน", Phone: "0822222222", Contact: "0822222222", Location: "อยุธยา", Category: "อาหาร / น้ำดื่ม / ถุงยังชีพ", Problem: "ขาดแคลนน้ำดื่ม อาหารแห้ง", Status: "Forwarded", Agency: "ปภ. จังหวัด", Severity: "🔴 สีแดง (วิกฤต อันตรายถึงชีวิต)" },
+                            { ID: "C-2602-001", Created_At: new Date(Date.now() - 86400000*2).toISOString(), Submitter: currentUser.username, Name: "นาย นพดล คนเก่ง", Company_Name: "2 คน", Phone: "0833333333", Contact: "0833333333", Location: "ปทุมธานี", Category: "ยารักษาโรค / สิ่งของจำเป็นอื่นๆ", Problem: "ขอยาน้ำกัดเท้า", Status: "In Progress", Close_Detail: "", Severity: "🟡 สีเหลือง (เร่งด่วน มีเด็ก/คนชรา)" },
+                            { ID: "C-2601-099", Created_At: new Date(Date.now() - 86400000*5).toISOString(), Submitter: "user456", Name: "นาย ดีมาก สุขเสมอ", Company_Name: "1 คน", Phone: "0844444444", Contact: "0844444444", Location: "เชียงราย", Category: "อาหาร / น้ำดื่ม / ถุงยังชีพ", Problem: "ขอข้าวกล่อง", Status: "Closed", Close_Detail: "แจกจ่ายเรียบร้อย", Severity: "🟢 สีเขียว (ปกติ/รอการช่วยเหลือตามคิว)" }
                         ],
                         users: [
                             { username: "admin01", name: "สมหมาย ผู้ดูแลระบบ", role: "admin" },
+                            { username: "agency_pohpo", name: "ศูนย์ปภ. เขต 1", role: "agency" },
                             { username: "user123", name: "สมศรี รักการค้า", role: "user" }
                         ]
                     };
@@ -1526,6 +1611,9 @@
                     
                     if(currentUser.role === 'user') {
                         displayData = globalData.filter(row => String(row.Submitter).trim() === String(currentUser.username).trim());
+                    } else if (currentUser.role === 'agency') {
+                        // Agency เห็นเคสที่ถูก Forward มาแล้ว หรือ In Progress หรือ Closed
+                        displayData = globalData.filter(row => ['Forwarded', 'In Progress', 'Closed'].includes(row.Status));
                     }
 
                     renderTable(displayData, 'case-table-body', false); 
@@ -1533,8 +1621,22 @@
                     if(currentUser.role === 'admin') {
                         updateDashboardStats(globalData);
                         if (result.users) renderUsersTable(result.users);
-                    } else {
-                        const historyData = displayData.filter(row => row.Status === 'Forwarded' || row.Status === 'In Progress' || row.Status === 'Closed' || row.Status === 'Rejected');
+                    } else if (currentUser.role === 'agency') {
+                        // Agency Dashboard Stats
+                        let p = 0, inp = 0, c = 0;
+                        displayData.forEach(row => {
+                            if(row.Status === 'Forwarded') p++;
+                            if(row.Status === 'In Progress') inp++;
+                            if(row.Severity && row.Severity.includes('แดง') && ['Forwarded', 'In Progress'].includes(row.Status)) c++;
+                        });
+                        animateValue('stat-agency-pending', p);
+                        animateValue('stat-agency-progress', inp);
+                        animateValue('stat-agency-critical', c);
+                        
+                        const historyData = displayData.filter(row => row.Status === 'Closed' || row.Status === 'Rejected');
+                        renderTable(historyData, 'history-table-body', true);
+                    } else if (currentUser.role === 'user') {
+                        const historyData = displayData.filter(row => row.Status === 'Closed' || row.Status === 'Rejected');
                         renderTable(historyData, 'history-table-body', true);
                     }
                     updateNotifications(displayData);
@@ -1543,7 +1645,6 @@
             finally { hideLoader(); }
         }
 
-        // --- Render Users Table (Admin Only) ---
         function renderUsersTable(users) {
             const tbody = document.getElementById('users-table-body');
             if (!tbody) return;
@@ -1556,9 +1657,9 @@
 
             users.forEach((user, index) => {
                 const delayClass = index < 10 ? `delay-${index * 100}` : '';
-                let roleBadge = user.role === 'admin' 
-                    ? `<span class="px-2.5 py-1 bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300 rounded-md text-xs font-bold border border-indigo-200 dark:border-indigo-700">Admin</span>`
-                    : `<span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300 rounded-md text-xs font-bold border border-emerald-200 dark:border-emerald-700">User</span>`;
+                let roleBadge = `<span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300 rounded-md text-xs font-bold border border-emerald-200 dark:border-emerald-700">User</span>`;
+                if(user.role === 'admin') roleBadge = `<span class="px-2.5 py-1 bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300 rounded-md text-xs font-bold border border-indigo-200 dark:border-indigo-700">Admin</span>`;
+                if(user.role === 'agency') roleBadge = `<span class="px-2.5 py-1 bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300 rounded-md text-xs font-bold border border-amber-200 dark:border-amber-700">Agency</span>`;
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800 transition-colors animate-fade-in-up ${delayClass}">
@@ -1567,7 +1668,6 @@
                         <td class="px-6 py-4">${roleBadge}</td>
                         <td class="px-6 py-4 text-center">
                             <div class="flex gap-2 justify-center">
-                                <button class="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium px-3 py-1 bg-white dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600 shadow-sm transition-all" onclick="alert('จำลอง: แก้ไขบัญชี ${user.username}')">แก้ไข</button>
                                 <button class="text-rose-500 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 font-medium px-3 py-1 bg-white dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600 shadow-sm transition-all" onclick="deleteUserAccount('${user.username}')">ลบ</button>
                             </div>
                         </td>
@@ -1576,7 +1676,6 @@
             });
         }
 
-        // --- Admin Functions: Add & Delete Users ---
         function openAddUserModal() {
             document.getElementById('adminAddUserForm').reset();
             const modal = document.getElementById('add-user-modal');
@@ -1637,6 +1736,11 @@
                 const badge = document.getElementById('badge-admin-list');
                 if(newCases > 0) { badge.textContent = newCases > 99 ? '99+' : newCases; badge.classList.remove('hidden'); } 
                 else badge.classList.add('hidden');
+            } else if (currentUser.role === 'agency') {
+                const pendingCases = globalData.filter(c => c.Status === 'Forwarded').length;
+                const badge = document.getElementById('badge-agency-list');
+                if(pendingCases > 0) { badge.textContent = pendingCases > 99 ? '99+' : pendingCases; badge.classList.remove('hidden'); } 
+                else badge.classList.add('hidden');
             } else {
                 const savedStates = JSON.parse(localStorage.getItem(`read_states_${currentUser.username}`) || '{}');
                 let unread = 0;
@@ -1658,16 +1762,36 @@
 
         async function submitCase(e) {
             e.preventDefault();
-            showLoader("กำลังส่งคำร้อง...");
+            showLoader("กำลังอัปโหลดและส่งคำร้อง...");
+
+            let imageBase64 = "";
+            const fileInput = document.getElementById('case_image');
+            if (fileInput && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                if (file.size > 5 * 1024 * 1024) {
+                    alert("ไฟล์ภาพใหญ่เกินไป (จำกัดไม่เกิน 5MB)");
+                    hideLoader();
+                    return;
+                }
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                await new Promise(resolve => reader.onload = () => {
+                    imageBase64 = reader.result;
+                    resolve();
+                });
+            }
+
             const payload = {
                 action: "submit_case", username: currentUser.username,
                 entrepreneur_name: document.getElementById('entrepreneur_name').value,
-                company_name: document.getElementById('company_name').value, // This is now Number of People
+                company_name: document.getElementById('company_name').value, 
                 contact_number: document.getElementById('contact_number').value,
                 location: document.getElementById('location').value,
                 problem_desc: document.getElementById('problem_desc').value,
-                category: document.getElementById('category').value
+                category: document.getElementById('category').value,
+                image_base64: imageBase64
             };
+            
             const res = await postToGAS(payload);
             hideLoader();
             if(res.status === "success") {
@@ -1700,18 +1824,52 @@
             document.getElementById('dt_id').textContent = caseData.ID || '-';
             document.getElementById('dt_date').textContent = caseData.Created_At ? new Date(caseData.Created_At).toLocaleString('th-TH') : '-';
             document.getElementById('dt_name').textContent = caseData.Name || '-';
-            document.getElementById('dt_company').textContent = caseData.Company_Name || '-'; // Shows number of people
+            document.getElementById('dt_company').textContent = caseData.Company_Name || '-'; 
             document.getElementById('dt_phone').textContent = phoneVal;
-            document.getElementById('dt_location').textContent = caseData.Location || '-';
+            
+            const locStr = caseData.Location || '-';
+            if (locStr.startsWith('http')) {
+                document.getElementById('dt_location').innerHTML = `<a href="${locStr}" target="_blank" class="text-blue-500 hover:underline">คลิกดูแผนที่ GPS</a>`;
+            } else {
+                document.getElementById('dt_location').textContent = locStr;
+            }
+            
             document.getElementById('dt_category').textContent = caseData.Category || '-';
             document.getElementById('dt_problem').textContent = caseData.Problem || '-';
 
+            const severitySec = document.getElementById('dt_severity_section');
+            const severityText = document.getElementById('dt_severity');
+            const severityBar = document.getElementById('dt_severity_bar');
+            
+            if (caseData.Severity && caseData.Severity.trim() !== "") {
+                severityText.textContent = caseData.Severity;
+                severitySec.classList.remove('hidden');
+                
+                if(caseData.Severity.includes("สีเขียว")) { severityBar.className = "absolute top-0 left-0 w-full h-1.5 bg-emerald-500"; severityText.className="font-bold text-base text-emerald-600 dark:text-emerald-400"; }
+                else if(caseData.Severity.includes("สีเหลือง")) { severityBar.className = "absolute top-0 left-0 w-full h-1.5 bg-amber-500"; severityText.className="font-bold text-base text-amber-600 dark:text-amber-400"; }
+                else if(caseData.Severity.includes("สีแดง")) { severityBar.className = "absolute top-0 left-0 w-full h-1.5 bg-rose-500"; severityText.className="font-bold text-base text-rose-600 dark:text-rose-400"; }
+                else { severityBar.className = "absolute top-0 left-0 w-full h-1.5 bg-slate-200 dark:bg-slate-700"; severityText.className="font-bold text-base text-slate-800 dark:text-white"; }
+            } else {
+                severitySec.classList.add('hidden');
+                severityBar.className = "absolute top-0 left-0 w-full h-1.5 bg-slate-200 dark:bg-slate-700";
+            }
+
+            const imgSec = document.getElementById('dt_image_section');
+            const imgTag = document.getElementById('dt_image');
+            if (caseData.Image && caseData.Image.startsWith('data:image')) {
+                imgTag.src = caseData.Image;
+                imgSec.classList.remove('hidden');
+            } else {
+                imgTag.src = "";
+                imgSec.classList.add('hidden');
+            }
+
             let statusBadge = '';
-            if(caseData.Status === "New") statusBadge = '<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-bold border border-blue-200 dark:border-blue-700">รอวิเคราะห์</span>';
-            else if(caseData.Status === "Forwarded") statusBadge = '<span class="px-3 py-1 bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 rounded-lg text-xs font-bold border border-teal-200 dark:border-teal-700">ส่งต่อแล้ว</span>';
-            else if(caseData.Status === "In Progress") statusBadge = '<span class="px-3 py-1 bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 rounded-lg text-xs font-bold border border-amber-200 dark:border-amber-700">กำลังดำเนินการ</span>';
-            else if(caseData.Status === "Closed") statusBadge = '<span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 rounded-lg text-xs font-bold border border-emerald-200 dark:border-emerald-700">ยุติเรื่อง</span>';
-            else if(caseData.Status === "Rejected") statusBadge = '<span class="px-3 py-1 bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-400 rounded-lg text-xs font-bold border border-rose-200 dark:border-rose-700">ไม่รับเคส</span>';
+            if(caseData.Status === "New") statusBadge = '<span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-bold border border-blue-200 dark:border-blue-700">รอประเมินจากส่วนกลาง</span>';
+            else if(caseData.Status === "Forwarded") statusBadge = '<span class="px-3 py-1 bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 rounded-lg text-xs font-bold border border-amber-200 dark:border-amber-700">ส่งต่อพื้นที่ (รอดำเนินการ)</span>';
+            else if(caseData.Status === "In Progress") statusBadge = '<span class="px-3 py-1 bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 rounded-lg text-xs font-bold border border-teal-200 dark:border-teal-700">กำลังเข้าช่วยเหลือ</span>';
+            else if(caseData.Status === "Closed") statusBadge = '<span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 rounded-lg text-xs font-bold border border-emerald-200 dark:border-emerald-700">ช่วยเหลือสำเร็จ/ยุติเรื่อง</span>';
+            else if(caseData.Status === "Rejected") statusBadge = '<span class="px-3 py-1 bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-400 rounded-lg text-xs font-bold border border-rose-200 dark:border-rose-700">ไม่รับเคส / แจ้งซ้ำ</span>';
             document.getElementById('dt_status').innerHTML = statusBadge;
 
             const resultSec = document.getElementById('dt_result_section');
@@ -1737,9 +1895,9 @@
                 resultBox.innerHTML = `
                     ${closeDesc}
                     <div class="grid grid-cols-2 gap-4 mt-2">
-                        <p><strong class="text-emerald-700 dark:text-emerald-400">ส่งต่อหน่วยงาน:</strong><br>${caseData.Agency || '-'}</p>
+                        <p><strong class="text-emerald-700 dark:text-emerald-400">หน่วยงานรับผิดชอบ:</strong><br>${caseData.Agency || '-'}</p>
                         <p><strong class="text-emerald-700 dark:text-emerald-400">ชื่อผู้ประสานงาน:</strong><br>${caseData.Agency_Contact || '-'}</p>
-                        <p class="col-span-2"><strong class="text-emerald-700 dark:text-emerald-400">เบอร์ติดต่อ:</strong> ${caseData.Agency_Phone || '-'}</p>
+                        <p class="col-span-2"><strong class="text-emerald-700 dark:text-emerald-400">เบอร์ติดต่อหน่วยงาน:</strong> ${caseData.Agency_Phone || '-'}</p>
                     </div>`;
                 resultSec.classList.remove('hidden');
             } else resultSec.classList.add('hidden');
@@ -1748,8 +1906,7 @@
             if (currentUser.role === 'admin' || currentUser.username === caseData.Submitter) { 
                 deleteBtn.classList.remove('hidden'); 
                 deleteBtn.onclick = () => deleteCase(caseData.ID); 
-            } 
-            else {
+            } else {
                 deleteBtn.classList.add('hidden');
             }
 
@@ -1783,7 +1940,7 @@
 
             document.getElementById('modal-case-id').textContent = caseData.ID;
             document.getElementById('modal-name').textContent = caseData.Name || '-';
-            document.getElementById('modal-company').textContent = caseData.Company_Name || '-'; // Shows number of people
+            document.getElementById('modal-company').textContent = caseData.Company_Name || '-'; 
             document.getElementById('modal-desc').textContent = caseData.Problem || '-';
             document.getElementById('modal-category').textContent = caseData.Category ? caseData.Category.split(':')[0] : '-';
             
@@ -1814,11 +1971,12 @@
             if(status === "รับเคส") {
                 rejectSec.classList.add('hidden'); forwardSec.classList.remove('hidden');
                 document.getElementById('admin_reject_reason').removeAttribute('required');
-                document.getElementById('admin_agency').setAttribute('required', 'true');
+                document.getElementById('admin_severity').setAttribute('required', 'true');
+                // เอา attribute required ของ agency ออกจากฟอร์มแอดมิน เพราะย้ายไปให้กู้ภัยทำแล้ว
             } else if (status === "ไม่รับเคส") {
                 rejectSec.classList.remove('hidden'); forwardSec.classList.add('hidden');
                 document.getElementById('admin_reject_reason').setAttribute('required', 'true');
-                document.getElementById('admin_agency').removeAttribute('required');
+                document.getElementById('admin_severity').removeAttribute('required');
             } else {
                 rejectSec.classList.add('hidden'); forwardSec.classList.add('hidden');
             }
@@ -1831,15 +1989,57 @@
                 action: "update_case", caseId: document.getElementById('admin_case_id').value,
                 analysis_status: isAccepted ? "รับเคส" : "ไม่รับเคส",
                 reject_reason: isAccepted ? "" : document.getElementById('admin_reject_reason').value,
-                agency: isAccepted ? document.getElementById('admin_agency').value : "",
-                agency_contact: isAccepted ? document.getElementById('admin_agency_contact').value : "",
-                agency_phone: isAccepted ? document.getElementById('admin_agency_phone').value : ""
+                severity: isAccepted ? document.getElementById('admin_severity').value : ""
+                // ตัด agency ทิ้ง ไม่ต้องส่งไปจากฟอร์มแอดมิน
             };
             showLoader("กำลังบันทึก...");
             const res = await postToGAS(payload);
             hideLoader();
             if(res.status === "success") { closeAdminModal(); fetchData(); } 
             else alert("เกิดข้อผิดพลาด: " + res.message);
+        }
+
+        // --- Agency Accept Modal (กู้ภัยรับเคสเข้าดำเนินการ) ---
+        function openAcceptCaseModal(caseId) {
+            document.getElementById('accept_case_id').value = caseId;
+            document.getElementById('accept-modal-case-id').textContent = caseId;
+            document.getElementById('acceptActionForm').reset();
+            
+            const modal = document.getElementById('accept-modal');
+            const modalContent = document.getElementById('accept-modal-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.style.opacity = '1'; modalContent.classList.remove('scale-95'); modalContent.classList.add('scale-100'); }, 10);
+        }
+
+        function closeAcceptCaseModal() {
+            const modal = document.getElementById('accept-modal');
+            const modalContent = document.getElementById('accept-modal-content');
+            modal.style.opacity = '0';
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        async function submitAcceptCase(e) {
+            e.preventDefault();
+            const caseId = document.getElementById('accept_case_id').value;
+            showLoader("กำลังยืนยันรับเคส...");
+            
+            // ดึงข้อมูลหน่วยงานจาก Modal กู้ภัย
+            const payload = {
+                action: "agency_accept",
+                caseId: caseId,
+                agency: document.getElementById('accept_agency').value,
+                agency_contact: document.getElementById('accept_agency_contact').value,
+                agency_phone: document.getElementById('accept_agency_phone').value
+            };
+            
+            const res = await postToGAS(payload);
+            hideLoader();
+            if(res.status === "success") { 
+                closeAcceptCaseModal(); 
+                fetchData(); 
+            } else alert("เกิดข้อผิดพลาด: " + res.message);
         }
 
         function openCloseCaseModal(caseId) {
@@ -1884,7 +2084,7 @@
             
             tbody.innerHTML = '';
             if(data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-12 text-slate-400 dark:text-slate-500 font-medium">ไม่พบข้อมูล</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-12 text-slate-400 dark:text-slate-500 font-medium">ไม่พบข้อมูล</td></tr>`;
                 return;
             }
 
@@ -1893,18 +2093,24 @@
                 let statusBadge = '';
                 let unreadDot = '';
                 
-                if(!isHistoryView && currentUser.role === 'user') {
+                if(!isHistoryView && (currentUser.role === 'user' || currentUser.role === 'agency')) {
                     const savedStates = JSON.parse(localStorage.getItem(`read_states_${currentUser.username}`) || '{}');
                     if(!savedStates[row.ID] || savedStates[row.ID] !== row.Status) {
                         unreadDot = '<span class="inline-block w-2.5 h-2.5 rounded-full bg-rose-500 mr-2 shadow-sm shadow-rose-500/50 animate-pulse"></span>';
                     }
                 }
 
-                if(row.Status === "New") statusBadge = '<span class="px-2.5 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-md text-xs font-semibold border border-blue-100 dark:border-blue-800">รอวิเคราะห์</span>';
-                else if(row.Status === "Forwarded") statusBadge = '<span class="px-2.5 py-1 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 rounded-md text-xs font-semibold border border-teal-100 dark:border-teal-800">ส่งต่อแล้ว</span>';
-                else if(row.Status === "In Progress") statusBadge = '<span class="px-2.5 py-1 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-md text-xs font-semibold border border-amber-100 dark:border-amber-800">กำลังดำเนินการ</span>';
+                if(row.Status === "New") statusBadge = '<span class="px-2.5 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-md text-xs font-semibold border border-blue-100 dark:border-blue-800">รอประเมิน</span>';
+                else if(row.Status === "Forwarded") statusBadge = '<span class="px-2.5 py-1 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-md text-xs font-semibold border border-amber-100 dark:border-amber-800">ส่งต่อ (รอรับเคส)</span>';
+                else if(row.Status === "In Progress") statusBadge = '<span class="px-2.5 py-1 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 rounded-md text-xs font-semibold border border-teal-100 dark:border-teal-800">กำลังเข้าช่วยเหลือ</span>';
                 else if(row.Status === "Closed") statusBadge = '<span class="px-2.5 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-md text-xs font-semibold border border-emerald-100 dark:border-emerald-800">ยุติเรื่อง</span>';
                 else if(row.Status === "Rejected") statusBadge = '<span class="px-2.5 py-1 bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 rounded-md text-xs font-semibold border border-rose-100 dark:border-rose-800">ไม่รับเคส</span>';
+
+                // จัดการแท็กสี ความรุนแรง
+                let sevBadge = '<span class="text-slate-400">-</span>';
+                if(row.Severity && row.Severity.includes('แดง')) sevBadge = '<span class="flex items-center w-max gap-1.5 text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-900/50 px-2 py-1 rounded-md border border-rose-200 dark:border-rose-800"><span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>วิกฤต</span>';
+                else if(row.Severity && row.Severity.includes('เหลือง')) sevBadge = '<span class="flex items-center w-max gap-1.5 text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/50 px-2 py-1 rounded-md border border-amber-200 dark:border-amber-800"><span class="w-2 h-2 rounded-full bg-amber-500"></span>เร่งด่วน</span>';
+                else if(row.Severity && row.Severity.includes('เขียว')) sevBadge = '<span class="flex items-center w-max gap-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/50 px-2 py-1 rounded-md border border-emerald-200 dark:border-emerald-800"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>ปกติ</span>';
 
                 const dateStr = row.Created_At ? new Date(row.Created_At).toLocaleDateString('th-TH') : '-';
                 let actionBtn = '';
@@ -1925,34 +2131,40 @@
                     } else {
                         actionBtn = `<button onclick="openDetailsModal('${row.ID}')" class="px-4 py-1.5 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-600 transition-all shadow-sm">รายละเอียด</button>`;
                     }
+                } else if (currentUser.role === 'agency' && !isHistoryView) {
+                    if (row.Status === "Forwarded") {
+                        actionBtn = `
+                            <div class="flex gap-2 justify-center">
+                                <button onclick="openDetailsModal('${row.ID}')" class="px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-600 transition-all shadow-sm">ดูข้อมูล</button>
+                                <button onclick="openAcceptCaseModal('${row.ID}')" class="px-3 py-1.5 bg-blue-50 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white rounded-lg text-xs font-bold border border-blue-100 dark:border-blue-800 hover:border-blue-600 transition-all shadow-sm">กดรับเคส</button>
+                            </div>`;
+                    } else if (row.Status === "In Progress") {
+                        actionBtn = `
+                            <div class="flex gap-2 justify-center">
+                                <button onclick="openDetailsModal('${row.ID}')" class="px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-600 transition-all shadow-sm">รายละเอียด</button>
+                                <button onclick="openCloseCaseModal('${row.ID}')" class="px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-600 dark:hover:bg-emerald-600 hover:text-white rounded-lg text-xs font-bold border border-emerald-100 dark:border-emerald-800 hover:border-emerald-600 transition-all shadow-sm">บันทึกผล/ยุติเรื่อง</button>
+                            </div>`;
+                    } else {
+                        actionBtn = `<button onclick="openDetailsModal('${row.ID}')" class="px-4 py-1.5 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-600 transition-all shadow-sm">รายละเอียด</button>`;
+                    }
                 } else {
                     actionBtn = `<button onclick="openDetailsModal('${row.ID}')" class="px-4 py-1.5 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-600 transition-all shadow-sm">รายละเอียด</button>`;
                 }
 
                 const delayClass = index < 10 ? `delay-${index * 100}` : '';
                 
-                if (isHistoryView) {
-                    tbody.innerHTML += `
-                        <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800 transition-colors animate-fade-in-up ${delayClass}">
-                            <td class="px-6 py-4 font-semibold text-blue-700 dark:text-blue-400">${row.ID || '-'}</td>
-                            <td class="px-6 py-4 text-slate-600 dark:text-slate-400">${dateStr}</td>
-                            <td class="px-6 py-4 truncate max-w-[200px] text-slate-600 dark:text-slate-400" title="${row.Category}">${row.Category ? row.Category.split(':')[0] : '-'}</td>
-                            <td class="px-6 py-4">${statusBadge}</td>
-                            <td class="px-6 py-4 text-center">${actionBtn}</td>
-                        </tr>
-                    `;
-                } else {
-                    tbody.innerHTML += `
-                        <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800 transition-colors animate-fade-in-up ${delayClass}">
-                            <td class="px-6 py-4 font-semibold text-blue-700 dark:text-blue-400">${unreadDot}${row.ID || '-'}</td>
-                            <td class="px-6 py-4 text-slate-600 dark:text-slate-400">${dateStr}</td>
-                            <td class="px-6 py-4 font-medium text-slate-800 dark:text-slate-200">${row.Name || '-'}</td>
-                            <td class="px-6 py-4 truncate max-w-[150px] text-slate-600 dark:text-slate-400" title="${row.Category}">${row.Category ? row.Category.split(':')[0] : '-'}</td>
-                            <td class="px-6 py-4">${statusBadge}</td>
-                            <td class="px-6 py-4 text-center">${actionBtn}</td>
-                        </tr>
-                    `;
-                }
+                // History List กับ Main List ใช้ Layout เดียวกันแล้ว (เพิ่มช่องความรุนแรง)
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800 transition-colors animate-fade-in-up ${delayClass}">
+                        <td class="px-6 py-4 font-semibold text-blue-700 dark:text-blue-400">${unreadDot}${row.ID || '-'}</td>
+                        <td class="px-6 py-4 text-slate-600 dark:text-slate-400">${dateStr}</td>
+                        <td class="px-6 py-4 font-medium text-slate-800 dark:text-slate-200">${row.Name || '-'}</td>
+                        <td class="px-6 py-4 truncate max-w-[150px] text-slate-600 dark:text-slate-400" title="${row.Category}">${row.Category ? row.Category.split(':')[0] : '-'}</td>
+                        <td class="px-6 py-4">${sevBadge}</td>
+                        <td class="px-6 py-4">${statusBadge}</td>
+                        <td class="px-6 py-4 text-center">${actionBtn}</td>
+                    </tr>
+                `;
             });
         }
 
@@ -1991,10 +2203,27 @@
                 }
             });
 
-            animateValue('stat-total', total);
-            animateValue('stat-progress', inProgress);
-            animateValue('stat-closed', closed);
-            animateValue('stat-rejected', rejected);
+            if (currentUser && currentUser.role === 'admin') {
+                animateValue('stat-total', total);
+                animateValue('stat-progress', inProgress);
+                animateValue('stat-closed', closed);
+                animateValue('stat-rejected', rejected);
+            } else if (currentUser && currentUser.role === 'agency') {
+                // สำหรับหน้า Dashboard หน่วยงานโดยเฉพาะ ให้ดึงข้อมูลมาแยกสี
+                let p = 0, r = 0, y = 0, g = 0;
+                data.forEach(row => {
+                    if (row.Status === 'Forwarded' || row.Status === 'In Progress') {
+                        p++;
+                        if(row.Severity && row.Severity.includes('แดง')) r++;
+                        else if(row.Severity && row.Severity.includes('เหลือง')) y++;
+                        else if(row.Severity && row.Severity.includes('เขียว')) g++;
+                    }
+                });
+                animateValue('stat-agency-pending', p);
+                animateValue('stat-agency-red', r);
+                animateValue('stat-agency-yellow', y);
+                animateValue('stat-agency-green', g);
+            }
 
             renderSlaChart(alerts);
             renderCategoryChart(catCount);
@@ -2058,7 +2287,6 @@
             });
         }
 
-        // --- Export CSV Function ---
         function exportToCSV() {
             if (!globalData || globalData.length === 0) {
                 alert("ไม่มีข้อมูลสำหรับส่งออก");
@@ -2066,7 +2294,7 @@
             }
             
             const headers = Object.keys(globalData[0]);
-            let csvContent = "\uFEFF"; // BOM ป้องกันภาษาไทยเพี้ยน
+            let csvContent = "\uFEFF"; 
             csvContent += headers.join(",") + "\n";
             
             globalData.forEach(row => {
@@ -2077,6 +2305,10 @@
                         if (val.startsWith("'")) val = val.substring(1);
                         if (val.length === 9 && !val.startsWith('0')) val = '0' + val;
                         if (val !== "") val = `="${val}"`; 
+                    }
+
+                    if (key === 'Image' && val.startsWith('data:image')) {
+                        val = "[Attached Image File]";
                     }
 
                     val = val.replace(/"/g, '""');
